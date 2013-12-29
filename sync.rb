@@ -6,7 +6,8 @@
 ### REQUIRES
 
 require 'git'
-require 'date'
+require 'time'
+require 'pathname'
 
 ### CONSTANTS 
 
@@ -19,14 +20,14 @@ DIR_APPLICATIONS = '/var/www'
 
 
 # iterate through directories 
-Pathname.glob(DIR_APPLICATIONS + '/*/').map(&:basename).each do | directory | 
+Pathname.glob(DIR_APPLICATIONS + '/*/').each do | directory | 
 
 	# ensure that directory is git enabled
 	begin
-		git     = Git.open   directory
-		logdate = Date.parse git.log.first.date 
+		git     = Git.open directory
+		logtime = git.log.first.date 
 
-	else
+	rescue Exception => e
 		raise "#{directory} is not a git repo!"
 
 	end
@@ -34,30 +35,17 @@ Pathname.glob(DIR_APPLICATIONS + '/*/').map(&:basename).each do | directory |
 	# change to application directory
 	Dir.chdir directory
 
-
-	# check if files have been updated since last run; only run
-	# if last git time 
-	file = nil
-
-	Dir.glob("**/*").each do | path |
-
-		# if file has been updated, then we need to flag that
-		# an update/push must occur
-		file = File.new path
-
-		# break from block if file update time is greater than 
-		# last log update time
-		break if Date.parse(file.mtime) > logdate
-	end 
-
-	# lets check again if last file exceeds logdate; if the case we
-	# need to fire off a push to master
-	if Date.parse(file.mtime) > logdate
-		git.commmit_all "Automatic REPO update #{file.mtime}"
-		git.push(g.remote 'name')
+	# attempt a commit; this will fail if nothing to do
+	begin
+		git.commit_all "AUTOSYNC UPDATE"
+		git.push
+	rescue
 	end
 
-	
-
+	begin
+		# attempt to do a pull in case anything has been commited 
+		git.pull
+	rescue
+	end
 
 end
