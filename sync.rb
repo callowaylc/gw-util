@@ -11,7 +11,7 @@ require 'pathname'
 
 ### CONSTANTS 
 
-DIR_APPLICATIONS = '/var/www'
+DIR_APPLICATIONS = '/home/ubuntu/Develop'
 
 ### FUNCTIONS
 
