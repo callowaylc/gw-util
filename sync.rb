@@ -17,7 +17,7 @@ DIR_APPLICATIONS = '/home/ubuntu/Develop'
 
 
 ### MAIN
-
+puts "Syncing repos #{Time.now}"
 
 # iterate through directories 
 Pathname.glob(DIR_APPLICATIONS + '/*/').each do | directory | 
@@ -37,15 +37,11 @@ Pathname.glob(DIR_APPLICATIONS + '/*/').each do | directory |
 
 	# attempt a commit; this will fail if nothing to do
 	begin
+		git.add
 		git.commit_all "AUTOSYNC UPDATE"
+		git.pull
 		git.push
 	rescue
 	end
 
-	begin
-		# attempt to do a pull in case anything has been commited 
-		git.pull
-	rescue
-	end
-
-end
+end if ENV['PRODUCTION'] == '1'

@@ -1,0 +1,3 @@
+#!/bin/bash
+PATH="$PATH:$HOME/.rvm/bin"
+rvmsudo ruby /home/ubuntu/Scripts/sync.rb
