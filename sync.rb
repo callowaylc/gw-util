@@ -44,4 +44,4 @@ Pathname.glob(DIR_APPLICATIONS + '/*/').each do | directory |
 	rescue
 	end
 
-end if ENV['PRODUCTION'] == '1'
+end if File.exist? '/tmp/production'
