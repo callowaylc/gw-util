@@ -39,9 +39,11 @@ Pathname.glob(DIR_APPLICATIONS + '/*/').each do | directory |
 	begin
 		git.add
 		git.commit_all "AUTOSYNC UPDATE"
-		git.pull
-		git.push
 	rescue
 	end
+
+	git.pull
+	git.push
+	
 
 end if File.exist? '/tmp/production'
